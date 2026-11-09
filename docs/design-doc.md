@@ -4,10 +4,11 @@
 
 ## Context
 
-- K is a social network (microblogging) for scientists and science enthusiasts
-- In a general-purpose social network it's difficult to find content related to a scientific or technical topic. Furthermore, a scientific discussion is more stimulating and appropriate in a dedicated space
-- The first version of K offers a feed to discover new content and a feed to read the content of chosen users. The topics of a post are visible at a glance through its tags.
-- In a future version, K will offer a way to reply to a post, dedicated areas where one can discuss specific topics and a way to share knowledge through mathematical formulas and scientific papers.
+K is a social network (microblogging) for scientists and science enthusiasts. It aims to solve the following problems: in a general-purpose social network it's difficult to find content related to a scientific or technical topic. Furthermore, a scientific discussion is more stimulating and appropriate in a dedicated space.
+
+The first version of K offers a feed to discover new content and a feed to read the content published by users connected to the logged-in user. The topics of a post are visible at a glance through its tags.
+
+In a future version, K will offer a way to comment on a post, dedicated areas where one can discuss specific topics and a way to share knowledge through mathematical formulas and scientific papers.
 
 ## Goals
 
@@ -99,5 +100,4 @@ In this scenario peak read QPS (~20k) is far above the capacity of one single se
 
 ### Target scale
 
-- The design of the first version is for 10^4 scale as it is a new social network, therefore over-engineering must be avoided
-- When the number of requests is more than a certain threshold (a few thousand) it's time to scale. In particular, when the availability of the feed read starts to be below 99.9% or p99 feeds load above 200ms it's time to scale.
+The design of the first version is for the 10^4 DAU scale as it is a new social network, therefore over-engineering must be avoided. Scaling becomes necessary when peak traffic approaches a few thousand requests per second, or when feed availability drops below 99.9%, or when the p99 feed load time exceeds 200 ms.
