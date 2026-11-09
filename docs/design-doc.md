@@ -6,17 +6,17 @@
 
 K is a social network (microblogging) for scientists and science enthusiasts. It aims to solve the following problems: in a general-purpose social network it's difficult to find content related to a scientific or technical topic. Furthermore, a scientific discussion is more stimulating and appropriate in a dedicated space.
 
-The first version of K offers a feed to discover new content and a feed to read the content published by users connected to the logged-in user. The topics of a post are visible at a glance through its tags.
+The first version of K offers a feed to discover new content and a feed to read the content published by users followed by the logged-in user. The topics of a post are visible at a glance through its tags.
 
 In a future version, K will offer a way to comment on a post, dedicated areas where one can discuss specific topics and a way to share knowledge through mathematical formulas and scientific papers.
 
 ## Goals
 
-- Users can navigate the explore feed to discover new content and make new connections
-- Users can publish text posts and keep up with the people they connect with in the home feed
+- Users can navigate the explore feed to discover new content and follow new users
+- Users can publish text posts and keep up with the people they follow in the home feed
 - Users can tag posts in order to help other users associate them with a topic
-- Users can connect with each other to build a network and stay up to date
-- Users can access their profile to easily manage their connections and posts
+- Users can follow each other to build a network and stay up to date
+- Users can access their profile to easily manage the users they follow and their posts
 
 ## Non-goals
 
@@ -33,15 +33,15 @@ In a future version, K will offer a way to comment on a post, dedicated areas wh
 - A user can sign up and log in
 - A user can publish a text post of up to 500 characters
 - A user can see all users' posts in the explore feed
-- A user can see their own posts and their connections' posts in the home feed
+- A user can see their own posts and posts from the users they follow in the home feed
 - A user can tag a post with 0 to a maximum of 3 topics from a predefined list
 - A user can delete their own posts
 - A user can see the topics of every post
 - A user can see feeds in reverse chronological order
-- A user can connect with other users
-- A user can break a connection with another user
+- A user can follow other users
+- A user can unfollow another user
 - A user can see their posts in their profile
-- A user can see their connections in their profile
+- A user can see their followers and the users they follow in their profile
 
 ### Non-functional requirements
 
@@ -92,7 +92,7 @@ Peak read QPS is ~2 and storage is ~2 GB in 5 years: far below what a single ser
 
 #### 10^6 DAU
 
-Peak read QPS is ~200 and storage is ~200 GB in 5 years: in general, one single server and database can still handle this load without much effort. However, each home feed varies from user to user and can potentially reach the upper limit of the QPS due to the queries for the ids of each user connection and their posts. The explore feed starts to be unreadable for a human as it receives 5 new posts per second: a different approach is needed to show the posts on that feed (e.g. recommended posts).
+Peak read QPS is ~200 and storage is ~200 GB in 5 years: in general, one single server and database can still handle this load without much effort. However, each home feed varies from user to user and can potentially reach the upper limit of the QPS due to the queries to fetch the ids of followed users and their posts. The explore feed starts to be unreadable for a human as it receives 5 new posts per second: a different approach is needed to show the posts on that feed (e.g. recommended posts).
 
 #### 10^8 DAU
 
