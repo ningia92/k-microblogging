@@ -1,4 +1,4 @@
-# 0001 - User connections
+# 0001 - Use follow for user connections
 
 Status: accepted
 
