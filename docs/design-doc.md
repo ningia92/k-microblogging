@@ -101,3 +101,33 @@ In this scenario peak read QPS (~20k) is far above the capacity of one single se
 ### Target scale
 
 The design of the first version is for the 10^4 DAU scale as it is a new social network, therefore over-engineering must be avoided. Scaling becomes necessary when peak traffic approaches a few thousand requests per second, or when feed availability drops below 99.9%, or when the p99 feed load time exceeds 200 ms.
+
+## API (v0)
+
+### Endpoint table
+
+| Method | URL | Description | Response |
+|---|---|---|---|
+| POST | /api/posts | Publish a post (with 0-3 topics) | 201 + created post |
+| DELETE | /api/posts/{post_id} | Delete own post | 204 (no body) |
+| GET | /api/feed/explore | See explore feed | 200 + post list |
+| GET | /api/me | Get logged-in user | 200 + (id, username) |
+| GET | /api/me/feed | See home feed | 200 + post list |
+| PUT | /api/me/following/{user_id} | Follow a user | 204 (no body) |
+| DELETE | /api/me/following/{user_id} | Unfollow a user | 204 (no body) |
+| GET | /api/users/{user_id}/posts | See user posts (profile) | 200 + post list |
+| GET | /api/users/{user_id}/following | See user following | 200 + following list |
+| GET | /api/users/{user_id}/followers | See user followers | 200 + follower list |
+
+### Conventions
+
+- The "me" in the URLs refers to the logged-in user, identified by the session cookie, so a user can never act on behalf of another
+- The "Follow a user" endpoint uses PUT, instead of POST, because PUT method is idempotent: sending the same request multiple times has the same effect (204 No Content) as sending it once. With POST, a repeated request would have to be handled as an error. The "Unfollow a user" endpoint follows the same convention returning 204 when one tries to unfollow a user who is not followed
+- The explore feed has its own URL (/api/feed/explore), instead of a standard /api/posts, to make the URL stable in case of implementation of recommended posts in the future (see Estimates). In that case, the URL /api/posts could still represent all the posts
+- Following yourself is rejected with "400 Bad Request"
+- Deleting a post owned by another user is rejected with "403 Forbidden"
+- Trying to delete a post that was already deleted returns "404 Not Found"
+
+### Left out
+
+- Login/logout and signup: in the first version these functions are handled by Django's built-in authentication
