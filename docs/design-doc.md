@@ -6,7 +6,7 @@
 
 K is a social network (microblogging) for scientists and science enthusiasts. It aims to solve the following problems: in a general-purpose social network it's difficult to find content related to a scientific or technical topic. Furthermore, a scientific discussion is more stimulating and appropriate in a dedicated space.
 
-The first version of K offers a feed to discover new content and a feed to read the content published by users followed by the logged-in user. The topics of a post are visible at a glance through its tags.
+The first version of K offers a feed to discover new content and a feed to read the content published by the users followed by the logged-in user. The topics of a post are visible at a glance through its tags.
 
 In a future version, K will offer a way to comment on a post, dedicated areas where one can discuss specific topics and a way to share knowledge through mathematical formulas and scientific papers.
 
@@ -23,7 +23,7 @@ In a future version, K will offer a way to comment on a post, dedicated areas wh
 - Topic feed and comments on a post (deferred): important but not core, easy to implement in the next version without changes to the core. Postponed to avoid initial scope creep
 - LaTeX, paper card (deferred): optional features to implement in a future version without changes to the core of the posts
 - Likes (out of scope for now): none of K's goals involves reacting to posts, so likes would add work without serving what K wants to be
-- Recommended posts in explore feed (out of scope for now): a global timeline is enough to discover scientific content, as long as the number of posts stays small enough to be readable (roughly below 10^6 DAU, see Estimates)
+- Recommended posts in explore feed (out of scope for now): a global timeline is enough to discover scientific content, as long as the number of posts stays small enough to be readable (roughly below 10^6 daily active users (DAU), see Estimates)
 - Image and video attachments (out of scope for now): K is about text-based discussion. Media would make storage and bandwidth costs orders of magnitude higher than text, without serving any of the goals
 
 ## Requirements
@@ -38,17 +38,16 @@ In a future version, K will offer a way to comment on a post, dedicated areas wh
 - A user can delete their own posts
 - A user can see the topics of every post
 - A user can see feeds in reverse chronological order
-- A user can follow other users
-- A user can unfollow another user
+- A user can follow/unfollow other users
 - A user can see their posts in their profile
-- A user can see their followers and the users they follow in their profile
+- A user can see their followers/following in their profile
 
 ### Non-functional requirements
 
 - Readers may see a feed that is stale by at most 4 seconds (eventual consistency): a short delay is barely noticeable, while an error is immediately visible to everyone
 - An author always sees their own post immediately after publishing it (read-your-writes)
 - Post publishing must be available 99% of the time; when it fails, the user gets an error and can retry. It's a reasonable choice as it does not damage the reputation of the service
-- Reading the feed is more frequent than post publishing, so reading the feed must have high availability (99.9%). In this case, an extended outage could cause the loss of a large number of users
+- Reading the feed is more frequent than publishing a post, so it must have high availability (99.9%). In this case, an extended outage could cause the loss of a large number of users
 - No post is lost once the author has received a confirmation (durability)
 - Both feeds load in under 200 ms for 99% of requests (p99)
 - Within 2 seconds of deletion, a post is no longer readable by other users
@@ -62,17 +61,17 @@ In a future version, K will offer a way to comment on a post, dedicated areas wh
 | Feed opens per user per day | 10 | A few times a day (morning, breaks, evening): K is a niche social network, not a general-purpose one |
 | Posts published per user per day | 0.5 | Most users read and rarely post; on average one post every two days |
 | Average post text size | ~100 bytes | Based on typical posts on other social networks, well below the 500-character limit |
-| Metadata per post | ~100 bytes | id, author, timestamp, topics |
-| Peak factor | ~×2 | 30% of the traffic during time window; 3 hours time window |
+| Metadata per post | ~100 bytes | ID, author, timestamp, topics |
+| Peak factor | ~×2 | 30% of daily traffic in a 3-hour window: 0.3 / (3/24) = ~2.4, rounded to ×2 |
 | Storage horizon | 5 years | Typical planning horizon for capacity estimates |
 
-**Derived read/write ratio:** 20:1
+**Derived read/write ratio: 20:1** (10 feed opens per user per day / 0.5 posts per user per day)
 
-NB: the ratio does not depend on the DAU as it originates from the behavior of each user.
+NB: the ratio does not depend on daily active users (DAU): it comes from per-user behavior.
 
 ### Estimates at three scales
 
-| DAU | 10^4 | 10^6 | 10^8 |
+| DAU (Daily Active Users) | 10^4 | 10^6 | 10^8 |
 |---|---|---|---|
 | Posts per day | 5 × 10^3  | 5 × 10^5 | 5 × 10^7 |
 | Feed reads per day | 10^5 | 10^7 | 10^9 |
@@ -92,11 +91,11 @@ Peak read QPS is ~2 and storage is ~2 GB in 5 years: far below what a single ser
 
 #### 10^6 DAU
 
-Peak read QPS is ~200 and storage is ~200 GB in 5 years: in general, one single server and database can still handle this load without much effort. However, each home feed varies from user to user and can potentially reach the upper limit of the QPS due to the queries to fetch the ids of followed users and their posts. The explore feed starts to be unreadable for a human as it receives 5 new posts per second: a different approach is needed to show the posts on that feed (e.g. recommended posts).
+Peak read QPS is ~200 and storage is ~200 GB in 5 years: in general, one single server and database can still handle this load without much effort. However, each home feed varies from user to user and can potentially reach the upper limit of the QPS due to the queries to fetch the IDs of followed users and their posts. The explore feed starts to be unreadable for a human as it receives 5 new posts per second: a different approach is needed to show the posts on that feed (e.g. recommended posts).
 
 #### 10^8 DAU
 
-In this scenario peak read QPS (~20k) is far above the capacity of one single server: it is required to distribute the load on multiple servers. Required storage is ~10 GB per day and ~20 TB in 5 years: older posts (rarely read) should be moved to secondary storage. As at 10^6 DAU, the update rate of the explore feed is too high (~500/s): a different approach is needed than showing all posts.
+In this scenario, peak read QPS (~20k) is far above the capacity of one single server: the load must be distributed across multiple servers. Required storage is ~10 GB per day and ~20 TB in 5 years: older posts (rarely read) should be moved to secondary storage. As with 10^6 DAU, the update rate of the explore feed is too high (~500/s): a different approach is needed than showing all posts.
 
 ### Target scale
 
@@ -121,9 +120,9 @@ The design of the first version is for the 10^4 DAU scale as it is a new social 
 
 ### Conventions
 
-- The "me" in the URLs refers to the logged-in user, identified by the session cookie, so a user can never act on behalf of another
-- The "Follow a user" endpoint uses PUT, instead of POST, because PUT method is idempotent: sending the same request multiple times has the same effect (204 No Content) as sending it once. With POST, a repeated request would have to be handled as an error. The "Unfollow a user" endpoint follows the same convention returning 204 when one tries to unfollow a user who is not followed
-- The explore feed has its own URL (/api/feed/explore), instead of a standard /api/posts, to make the URL stable in case of implementation of recommended posts in the future (see Estimates). In that case, the URL /api/posts could still represent all the posts
+- The "me" in the URLs refers to the logged-in user (identified by the session cookie) so a user can never act on behalf of another
+- The "Follow a user" endpoint uses PUT, instead of POST, because PUT method is idempotent: sending the same request multiple times has the same effect (204 No Content) as sending it once. With POST, a repeated request would have to be handled as an error. The "Unfollow a user" endpoint uses the same convention returning 204 when one tries to unfollow a user who is not followed
+- The explore feed has a more general URL (/api/feed/explore), instead of a standard endpoint such as /api/posts, to make the URL stable in case of implementation of recommended posts in the future (see Estimates). In that case, the URL /api/posts could still represent all the posts
 - Following yourself is rejected with "400 Bad Request"
 - Deleting a post owned by another user is rejected with "403 Forbidden"
 - Trying to delete a post that was already deleted returns "404 Not Found"
