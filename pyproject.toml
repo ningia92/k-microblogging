@@ -9,3 +9,11 @@ dependencies = [
     "djangorestframework>=3.18.3",
     "psycopg[binary]>=3.3.9",
 ]
+
+[dependency-groups]
+dev = [
+    "ruff>=0.17.5",
+]
+
+[tool.ruff]
+extend-exclude = ["**/migrations/"]
