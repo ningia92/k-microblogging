@@ -32,6 +32,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    "users",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -83,6 +84,9 @@ DATABASES = {
         "PORT": os.environ.get("POSTGRES_PORT", default="5432"),
     }
 }
+
+
+AUTH_USER_MODEL = "users.User"
 
 
 # Password validation
