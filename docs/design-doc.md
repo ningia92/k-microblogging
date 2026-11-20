@@ -22,6 +22,7 @@ In a future version, K will offer a way to comment on a post, dedicated areas wh
 
 - Topic feed and comments on a post (deferred): important but not core, easy to implement in the next version without changes to the core. Postponed to avoid initial scope creep
 - LaTeX, paper card (deferred): optional features to implement in a future version without changes to the core of the posts
+- Account deletion (deferred): the data model already removes a user's posts and follows (cascade), so only an endpoint is missing
 - Likes (out of scope for now): none of K's goals involves reacting to posts, so likes would add work without serving what K wants to be
 - Recommended posts in explore feed (out of scope for now): a global timeline is enough to discover scientific content, as long as the number of posts stays small enough to be readable (roughly below 10^6 daily active users (DAU), see Estimates)
 - Image and video attachments (out of scope for now): K is about text-based discussion. Media would make storage and bandwidth costs orders of magnitude higher than text, without serving any of the goals
