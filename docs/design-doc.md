@@ -112,6 +112,7 @@ The design of the first version is for the 10^4 DAU scale as it is a new social 
 | POST | /api/posts | Publish a post (with 0-3 topics) | 201 + created post |
 | DELETE | /api/posts/{post_id} | Delete own post | 204 (no body) |
 | GET | /api/feed/explore | See explore feed | 200 + post list |
+| GET | /api/topics | Get topic list | 200 + topic list |
 | GET | /api/me | Get logged-in user | 200 + (id, username) |
 | GET | /api/me/feed | See home feed | 200 + post list |
 | PUT | /api/me/following/{user_id} | Follow a user | 204 (no body) |
@@ -125,6 +126,7 @@ The design of the first version is for the 10^4 DAU scale as it is a new social 
 - The "me" in the URLs refers to the logged-in user (identified by the session cookie) so a user can never act on behalf of another
 - The "Follow a user" endpoint uses PUT, instead of POST, because PUT method is idempotent: sending the same request multiple times has the same effect (204 No Content) as sending it once. With POST, a repeated request would have to be handled as an error. The "Unfollow a user" endpoint uses the same convention returning 204 when one tries to unfollow a user who is not followed
 - The explore feed has a more general URL (/api/feed/explore), instead of a standard endpoint such as /api/posts, to make the URL stable in case of implementation of recommended posts in the future (see Estimates). In that case, the URL /api/posts could still represent all the posts
+- Posts contain topic key (e.g. "biology"), not labels. Clients fetch the key/label list from /api/topics: the backend stays the only source of truth, so adding or renaming a topic requires no client change
 - Following yourself is rejected with "400 Bad Request"
 - Deleting a post owned by another user is rejected with "403 Forbidden"
 - Trying to delete a post that was already deleted returns "404 Not Found"
