@@ -130,6 +130,7 @@ The design of the first version is for the 10^4 DAU scale as it is a new social 
 - Following yourself is rejected with "400 Bad Request"
 - Deleting a post owned by another user is rejected with "403 Forbidden"
 - Trying to delete a post that was already deleted returns "404 Not Found"
+- All endpoints require an authenticated session: requests without it are rejected with "403 Forbidden"
 
 ### Left out
 
