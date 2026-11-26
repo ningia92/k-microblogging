@@ -32,7 +32,7 @@ In a future version, K will offer a way to comment on a post, dedicated areas wh
 
 ### Functional requirements
 
-- A user can sign up and log in
+- A user can signup, login and logout
 - A user can publish a text post of up to 500 characters
 - A user can see all users' posts in the explore feed
 - A user can see their own posts and posts from the users they follow in the home feed
@@ -109,6 +109,9 @@ The design of the first version is for the 10^4 DAU scale as it is a new social 
 
 | Method | URL | Description | Response |
 |---|---|---|---|
+| POST | /api/signup | Signup user | 201 + (id, username) |
+| POST | /api/login | Login user | 200 + (id, username) |
+| POST | /api/logout | Logout user | 204 (no body) |
 | POST | /api/posts | Publish a post (with 0-3 topics) | 201 + created post |
 | DELETE | /api/posts/{post_id} | Delete own post | 204 (no body) |
 | GET | /api/feed/explore | See explore feed | 200 + post list |
